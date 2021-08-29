@@ -1,4 +1,4 @@
-import ESLint from 'eslint';
+import { ESLint, Linter } from 'eslint';
 import * as fs from 'fs';
 import packageJson from '../package.json';
 
@@ -14,24 +14,14 @@ const configFiles = fs
 
 const requireConfig = (
   config: string
-): ESLint.Linter.Config &
-  Required<Pick<ESLint.Linter.Config, 'plugins' | 'extends' | 'rules'>> => ({
+): Linter.Config &
+  Required<Pick<Linter.Config, 'plugins' | 'extends' | 'rules'>> => ({
   plugins: [],
   extends: [],
   rules: {},
   // eslint-disable-next-line node/global-require,@typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
-  ...(require(config) as ESLint.Linter.Config)
+  ...(require(config) as Linter.Config)
 });
-
-// todo: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/56545
-declare module 'eslint' {
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  namespace ESLint {
-    interface LintResult {
-      fatalErrorCount: number;
-    }
-  }
-}
 
 describe('package.json', () => {
   it('includes every config file', () => {
@@ -43,9 +33,7 @@ describe('package.json', () => {
   });
 });
 
-const makeEnabledRulesWarn = (
-  value: ESLint.Linter.RuleEntry
-): ESLint.Linter.RuleEntry => {
+const makeEnabledRulesWarn = (value: Linter.RuleEntry): Linter.RuleEntry => {
   if (Array.isArray(value)) {
     return [
       value[0] !== 'off' ? 'warn' : 'off',
@@ -63,7 +51,7 @@ describe('for each config file', () => {
     it('is valid', async () => {
       expect.hasAssertions();
 
-      const baseConfig: ESLint.Linter.Config = {
+      const baseConfig: Linter.Config = {
         ...config,
         parserOptions: {
           // @babel/eslint-parser
@@ -84,7 +72,7 @@ describe('for each config file', () => {
         )
       };
 
-      const linter = new ESLint.ESLint({
+      const linter = new ESLint({
         useEslintrc: false,
         baseConfig
       });
@@ -92,7 +80,7 @@ describe('for each config file', () => {
       await expect(
         linter.lintText('', { filePath: './test/configs.spec.ts' })
       ).resolves.toStrictEqual([
-        expect.objectContaining<Partial<ESLint.ESLint.LintResult>>({
+        expect.objectContaining<Partial<ESLint.LintResult>>({
           errorCount: 0,
           fatalErrorCount: 0
         })

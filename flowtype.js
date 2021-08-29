@@ -2,7 +2,7 @@
 const config = {
   parser: '@babel/eslint-parser',
   plugins: ['flowtype', 'prettier'],
-  extends: ['plugin:flowtype/recommended', 'plugin:prettier/recommended'],
+  extends: ['plugin:flowtype/recommended', 'prettier'],
   rules: {
     'flowtype/array-style-complex-type': ['error', 'verbose'],
     'flowtype/array-style-simple-type': ['error', 'shorthand'],

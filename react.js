@@ -17,7 +17,7 @@ const config = {
     'plugin:jsx-a11y/strict',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:prettier/recommended'
+    'prettier'
   ],
   overrides: [
     {
